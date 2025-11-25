@@ -185,7 +185,9 @@
   <div class="container">
     <div class="size-indicator" id="sizeIndicator">24px</div>
     <div id="textDisplay" class="vertical-text" contenteditable="true" spellcheck="false">
-섯달 테스트페이지입니다.
+섯달 테스트 페이지입니다.
+섯달은 12월 1일 텀블벅 공게예정입니다. 
+왼쪽 아래 버튼으로 자세한 이야기를 확인하세요!
 
 여기에 자유롭게 텍스트를 입력하고 편집할 수 있습니다.
 마우스 휠 또는 핀치 제스처로 글자 크기를 조절하세요.
@@ -245,30 +247,34 @@
     }
 
     // OpenType 기능 토글 상태를 읽어와서 적용하는 함수
-    function updateOpenTypeFeatures() {
-      // vert는 항상 켜짐
-      const features = ['"vert" 1'];
+function updateOpenTypeFeatures() {
+  // vert는 항상 켜짐
+  const features = ['"vert" 1'];
 
-      if (featureCheckboxes && featureCheckboxes.length > 0) {
-        featureCheckboxes.forEach(cb => {
-          const tag = cb.dataset.feature;
-          if (tag === 'vert') return;
-          if (cb.checked) {
-            const value = cb.dataset.value ? parseInt(cb.dataset.value, 10) : 1;
-            features.push(`"${tag}" ${value}`);
-          }
-        });
-      }
+  if (featureCheckboxes && featureCheckboxes.length > 0) {
+    featureCheckboxes.forEach(cb => {
+      const tag = cb.dataset.feature;
+      if (!tag || tag === 'vert') return;
 
-      const featureString = features.join(', ');
+      // ✅ 체크되면 1, 체크 해제되면 0 강제로 지정
+      const value = cb.checked
+        ? (cb.dataset.value ? parseInt(cb.dataset.value, 10) : 1)
+        : 0;
 
-      textDisplay.style.fontFeatureSettings = featureString;
+      features.push(`"${tag}" ${value}`);
+    });
+  }
 
-      const allElements = textDisplay.querySelectorAll('*');
-      allElements.forEach(el => {
-        el.style.fontFeatureSettings = featureString;
-      });
-    }
+  const featureString = features.join(', ');
+
+  textDisplay.style.fontFeatureSettings = featureString;
+
+  const allElements = textDisplay.querySelectorAll('*');
+  allElements.forEach(el => {
+    el.style.fontFeatureSettings = featureString;
+  });
+}
+
 
     function updateFontSize(newSize) {
       fontSize = Math.min(Math.max(newSize, minSize), maxSize);
@@ -398,6 +404,16 @@
       글리프 보기
     </button>
   </div>
+
+  <!-- 텀블벅 링크 버튼: 글리프 보기 버튼 위 -->
+  <div style="position: fixed; bottom: 60px; left: 20px;">
+    <button
+      onclick="window.open('https://tumblbug.com/font_december', '_blank')"
+      style="padding: 10px 20px; font-size: 14px; border: none; background: rgba(52, 152, 219, 0.9); color: #fff; border-radius: 6px; cursor: pointer;">
+      텀블벅에서 보기
+    </button>
+  </div>
+
 </body>
 
 </html>
