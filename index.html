@@ -60,7 +60,7 @@
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
 
-      overflow: visible;
+      overflow: hidden;
       transition: none !important;
       animation: none !important;
     }
@@ -205,6 +205,8 @@
     const maxSize = 60;
     let sizeIndicatorTimeout;
     let gestureIndicatorTimeout;
+    let isPlaceholderActive = true;
+
 
     // 터치 관련 변수들
     let initialDistance = 0;
@@ -245,6 +247,20 @@
       // 스타일 재적용 후 OpenType 기능도 다시 적용
       updateOpenTypeFeatures();
     }
+
+// ★ 필요할 때 한 번만 초기 문구를 지우는 함수
+function clearPlaceholderIfNeeded() {
+  if (!isPlaceholderActive) return;
+  isPlaceholderActive = false;
+  textDisplay.textContent = '';   // 기존 안내 문구 싹 지우기
+}
+
+// 사용자가 타이핑을 시작하려고 할 때
+textDisplay.addEventListener('focus', clearPlaceholderIfNeeded);
+textDisplay.addEventListener('keydown', (e) => {
+  // 단순 방향키/ctrl 같은 건 무시하고 싶으면 조건 더 넣어도 됨
+  clearPlaceholderIfNeeded();
+});
 
     // OpenType 기능 토글 상태를 읽어와서 적용하는 함수
 function updateOpenTypeFeatures() {
